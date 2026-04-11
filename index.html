@@ -4,324 +4,385 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FrameLogic Display Runtime</title>
-  <meta name="description" content="FrameLogic Display Runtime modernizes legacy Paltronics jackpot displays with custom themes, visual layout control, and media-rich jackpot presentation for Rev4 and Rev7 systems." />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css" />
+  <meta name="description" content="Modern jackpot display runtime for Paltronics Rev4 & Rev7. Create custom themes, modernize legacy displays, and combine multiple controllers into one attraction screen." />
+  <style>
+    :root{
+      --bg:#07111f;
+      --bg2:#0d1c31;
+      --card:rgba(255,255,255,.07);
+      --line:rgba(255,255,255,.12);
+      --text:#ecf3ff;
+      --muted:#a8b7d1;
+      --gold:#ffcf57;
+      --gold2:#ff9f1a;
+      --blue:#33c5ff;
+      --green:#42d67e;
+      --shadow:0 20px 60px rgba(0,0,0,.35);
+      --radius:24px;
+      --max:1180px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter,Segoe UI,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(255,179,0,.18), transparent 30%),
+        radial-gradient(circle at top left, rgba(51,197,255,.18), transparent 28%),
+        linear-gradient(180deg, #08101c, #091423 34%, #0a1425 100%);
+      line-height:1.55;
+    }
+    a{color:inherit;text-decoration:none}
+    .container{width:min(var(--max), calc(100% - 40px)); margin:0 auto}
+    .topbar{
+      position:sticky; top:0; z-index:30;
+      backdrop-filter: blur(16px);
+      background:rgba(6,13,24,.72);
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .nav{display:flex; align-items:center; justify-content:space-between; padding:14px 0}
+    .brand{display:flex; align-items:center; gap:14px; font-weight:800; letter-spacing:.3px}
+    .brand img{width:48px; height:48px; object-fit:contain; filter:drop-shadow(0 6px 16px rgba(0,0,0,.28))}
+    .brand span{font-size:1.02rem}
+    .navlinks{display:flex; gap:20px; color:var(--muted); font-size:.95rem}
+    .navlinks a:hover{color:#fff}
+
+    .hero{position:relative; overflow:hidden}
+    .hero::before{
+      content:""; position:absolute; inset:auto -10% 0 auto; width:420px; height:420px;
+      background:radial-gradient(circle, rgba(255,207,87,.22), transparent 60%);
+      filter:blur(10px);
+    }
+    .hero-grid{display:grid; grid-template-columns:1.05fr .95fr; gap:34px; align-items:center; padding:72px 0 56px}
+    .eyebrow{
+      display:inline-flex; gap:10px; align-items:center; padding:8px 14px; border-radius:999px;
+      background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); color:#dfe9fa; font-size:.9rem;
+      box-shadow:var(--shadow);
+    }
+    .eyebrow .dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(135deg,var(--green),#9cf7bf);box-shadow:0 0 16px rgba(66,214,126,.65)}
+    h1{
+      font-size:clamp(2.5rem, 5vw, 4.8rem); line-height:1.02; margin:18px 0 18px;
+      letter-spacing:-.03em;
+    }
+    .grad{
+      background:linear-gradient(90deg, #fff 0%, #ffe39c 40%, #ffb332 82%);
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+    }
+    .lead{font-size:1.12rem; color:var(--muted); max-width:700px; margin-bottom:28px}
+    .hero-cta{display:flex; gap:14px; flex-wrap:wrap; margin-bottom:20px}
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:10px;
+      padding:14px 20px; border-radius:14px; font-weight:700; transition:.22s ease;
+      border:1px solid transparent;
+    }
+    .btn.primary{background:linear-gradient(135deg,var(--gold),var(--gold2)); color:#1b1200; box-shadow:0 14px 30px rgba(255,159,26,.25)}
+    .btn.secondary{background:rgba(255,255,255,.06); border-color:rgba(255,255,255,.12)}
+    .btn:hover{transform:translateY(-2px)}
+    .hero-points{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; margin-top:26px}
+    .hero-points div,.mini-card{
+      background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); border-radius:18px; padding:14px 16px;
+    }
+    .mini-card strong{display:block; font-size:1.1rem; margin-bottom:4px}
+    .hero-visual{
+      position:relative; padding:28px; border-radius:32px;
+      background:linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.04));
+      border:1px solid rgba(255,255,255,.12); box-shadow:var(--shadow);
+    }
+    .hero-visual::after{
+      content:""; position:absolute; inset:12px; border-radius:24px; pointer-events:none;
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .hero-visual img{width:100%; max-width:430px; display:block; margin:0 auto; object-fit:contain; filter:drop-shadow(0 24px 40px rgba(0,0,0,.32))}
+    .floating{
+      position:absolute; padding:10px 14px; border-radius:14px; font-weight:700; font-size:.92rem;
+      background:rgba(7,17,31,.88); border:1px solid rgba(255,255,255,.1); box-shadow:var(--shadow);
+    }
+    .f1{top:24px; right:10px; color:#ffe39c}
+    .f2{bottom:18px; left:16px; color:#b8eaff}
+
+    section{padding:26px 0 54px}
+    .section-head{text-align:center; margin-bottom:26px}
+    .section-head h2{font-size:clamp(1.7rem, 3vw, 2.8rem); margin:0 0 10px}
+    .section-head p{max-width:780px; margin:0 auto; color:var(--muted)}
+
+    .grid-3,.grid-4{display:grid; gap:18px}
+    .grid-3{grid-template-columns:repeat(3, minmax(0,1fr))}
+    .grid-4{grid-template-columns:repeat(4, minmax(0,1fr))}
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.04));
+      border:1px solid var(--line); border-radius:24px; padding:22px; box-shadow:var(--shadow);
+    }
+    .card h3{margin:12px 0 10px; font-size:1.15rem}
+    .card p{margin:0; color:var(--muted)}
+    .icon{
+      width:52px;height:52px;border-radius:16px; display:grid; place-items:center;
+      background:linear-gradient(135deg, rgba(255,207,87,.18), rgba(51,197,255,.18));
+      border:1px solid rgba(255,255,255,.1); font-size:1.4rem;
+    }
+
+    .showcase{
+      display:grid; grid-template-columns:1.08fr .92fr; gap:22px; align-items:center;
+    }
+    .shot{
+      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      border:1px solid var(--line); border-radius:28px; padding:16px; box-shadow:var(--shadow);
+    }
+    .shot img{width:100%; border-radius:18px; display:block}
+    .list{display:grid; gap:12px}
+    .list .row{
+      display:flex; gap:12px; align-items:flex-start; padding:14px 16px;
+      background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); border-radius:18px;
+    }
+    .tick{
+      flex:0 0 auto; width:28px; height:28px; border-radius:50%; display:grid; place-items:center;
+      background:linear-gradient(135deg, rgba(66,214,126,.25), rgba(66,214,126,.1));
+      border:1px solid rgba(66,214,126,.35); color:#aef6c7; font-weight:800;
+    }
+    .row strong{display:block; margin-bottom:3px}
+    .row p{margin:0; color:var(--muted)}
+
+    .band{
+      margin-top:10px; padding:22px; border-radius:24px;
+      background:linear-gradient(90deg, rgba(255,207,87,.12), rgba(51,197,255,.08));
+      border:1px solid rgba(255,255,255,.1); text-align:center; box-shadow:var(--shadow);
+    }
+    .band strong{font-size:1.1rem}
+
+    .workflow{display:grid; grid-template-columns:repeat(3,1fr); gap:18px}
+    .step-num{
+      display:inline-grid; place-items:center; width:34px; height:34px; border-radius:999px;
+      background:linear-gradient(135deg,var(--gold),var(--gold2)); color:#211500; font-weight:900; margin-bottom:12px;
+    }
+
+    .compat{
+      display:grid; grid-template-columns:1fr 1fr; gap:18px;
+    }
+    .badge-row{display:flex; gap:12px; flex-wrap:wrap; margin-top:14px}
+    .badge{
+      padding:10px 14px; border-radius:999px; background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.1); color:#eaf1fc; font-weight:700; font-size:.95rem;
+    }
+
+    .contact{
+      text-align:center; padding:32px; border-radius:28px;
+      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+      border:1px solid var(--line); box-shadow:var(--shadow);
+    }
+    .contact .mail{font-size:clamp(1.2rem, 2vw, 1.6rem); color:#ffe39c; font-weight:800}
+
+    footer{padding:26px 0 40px; color:#93a3be; text-align:center; font-size:.94rem}
+
+    @media (max-width: 980px){
+      .hero-grid,.showcase,.compat{grid-template-columns:1fr}
+      .grid-3{grid-template-columns:1fr 1fr}
+      .grid-4,.workflow{grid-template-columns:1fr 1fr}
+      .hero-visual{order:-1}
+    }
+    @media (max-width: 680px){
+      .nav{gap:14px; flex-direction:column}
+      .navlinks{flex-wrap:wrap; justify-content:center}
+      .container{width:min(var(--max), calc(100% - 24px))}
+      .hero-grid{padding:46px 0 32px}
+      .grid-3,.grid-4,.workflow,.hero-points{grid-template-columns:1fr}
+      .card,.contact,.shot,.hero-visual{border-radius:20px}
+      section{padding:18px 0 38px}
+    }
+  </style>
 </head>
 <body>
-  <header class="site-header">
-    <div class="container nav-wrap">
+  <div class="topbar">
+    <div class="container nav">
       <a class="brand" href="#top">
-        <img src="logo.png" alt="FrameLogic logo" class="brand-logo" />
-        <div>
-          <strong>FrameLogic</strong>
-          <span>Display Runtime</span>
-        </div>
+        <img src="assets/logo.png" alt="FrameLogic logo" />
+        <span>FrameLogic Display Runtime</span>
       </a>
-
-      <nav class="nav">
-        <a href="#solution">Solution</a>
-        <a href="#config-manager">Config Manager</a>
+      <div class="navlinks">
         <a href="#features">Features</a>
+        <a href="#designer">Config Manager</a>
+        <a href="#multi">Multi-Controller</a>
+        <a href="#compatibility">Compatibility</a>
         <a href="#contact">Contact</a>
-      </nav>
+      </div>
+    </div>
+  </div>
 
-      <a class="btn btn-sm btn-outline" href="#contact">Request Demo</a>
+  <header class="hero" id="top">
+    <div class="container hero-grid">
+      <div>
+        <div class="eyebrow"><span class="dot"></span> Modern jackpot visuals for legacy Paltronics systems</div>
+        <h1><span class="grad">Modernize</span> your jackpot display without replacing your controller.</h1>
+        <p class="lead">
+          FrameLogic Display Runtime helps casino operators transform older Paltronics-based jackpot setups into modern, high-impact display experiences with flexible design control, multi-controller support, and a clean Media PC workflow.
+        </p>
+        <div class="hero-cta">
+          <a class="btn primary" href="#contact">Contact FrameLogic</a>
+          <a class="btn secondary" href="#designer">Explore Config Manager</a>
+        </div>
+        <div class="hero-points">
+          <div class="mini-card"><strong>Paltronics Rev4 & Rev7</strong><span>Built specifically for supported legacy controller environments.</span></div>
+          <div class="mini-card"><strong>Custom Theme Creation</strong><span>Design your own visual identity for promos, events, and attraction screens.</span></div>
+          <div class="mini-card"><strong>Multi-Controller Support</strong><span>Combine multiple Paltronics sources into one attention-grabbing display.</span></div>
+          <div class="mini-card"><strong>Media PC Ready</strong><span>Build your own display PC and connect it to your Paltronics setup.</span></div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="floating f1">Custom casino themes</div>
+        <div class="floating f2">Modern attraction display</div>
+        <img src="assets/logo.png" alt="FrameLogic Display Runtime logo preview" />
+      </div>
     </div>
   </header>
 
-  <main id="top">
-    <section class="hero">
-      <div class="hero-bg"></div>
-      <div class="container hero-grid">
-        <div class="hero-copy reveal">
-          <span class="eyebrow">Modernize legacy Paltronics jackpots</span>
-          <h1>Upgrade old jackpot displays into a modern visual experience.</h1>
-          <p class="lead">
-            <strong>FrameLogic Display Runtime</strong> helps casino owners create unique, modern jackpot themes while still using their existing <strong>Paltronics Rev4 and Rev7</strong> controller setup. Build your own Media PC, connect to Paltronics, and transform outdated jackpot presentation into a branded, high-impact display.
-          </p>
-
-          <div class="hero-actions">
-            <a href="#contact" class="btn btn-primary">Get a Quote</a>
-            <a href="#config-manager" class="btn btn-secondary">See Config Manager</a>
-          </div>
-
-          <div class="hero-points">
-            <span>Works with Paltronics Rev4 &amp; Rev7</span>
-            <span>Build your own Media PC</span>
-            <span>Create custom jackpot themes</span>
-          </div>
+  <section id="features">
+    <div class="container">
+      <div class="section-head">
+        <h2>Why casinos choose FrameLogic</h2>
+        <p>FrameLogic is built for operators who want a cleaner, more modern jackpot presentation while continuing to use supported Paltronics hardware already on the floor.</p>
+      </div>
+      <div class="grid-4">
+        <div class="card">
+          <div class="icon">🎨</div>
+          <h3>Unique jackpot identity</h3>
+          <p>Create a distinct visual style for your property with your own themes, branding, meter placement, labels, and promotional screens.</p>
         </div>
-
-        <div class="hero-card reveal delay-1">
-          <div class="product-panel">
-            <div class="panel-top">
-              <img src="logo.png" alt="FrameLogic logo" />
-              <div>
-                <h2>FrameLogic Display Runtime</h2>
-                <p>Custom jackpot presentation platform for legacy Paltronics systems</p>
-              </div>
-            </div>
-
-            <div class="mock-screen">
-              <div class="mock-overlay"></div>
-              <div class="mock-stats">
-                <div>
-                  <span>Compatibility</span>
-                  <strong>Rev4 / Rev7</strong>
-                </div>
-                <div>
-                  <span>Design</span>
-                  <strong>Custom Themes</strong>
-                </div>
-                <div>
-                  <span>Media</span>
-                  <strong>Video / Image</strong>
-                </div>
-              </div>
-            </div>
-
-            <ul class="mini-list">
-              <li>Modern visual upgrade for older Paltronics installations</li>
-              <li>Ideal for branded jackpots, events, and seasonal campaigns</li>
-              <li>Designed for casino operators who want flexibility without replacing the controller</li>
-            </ul>
-          </div>
+        <div class="card">
+          <div class="icon">⚡</div>
+          <h3>Modern screen impact</h3>
+          <p>Turn old-looking jackpot displays into more attractive, player-facing visuals designed to stand out on a busy casino floor.</p>
+        </div>
+        <div class="card">
+          <div class="icon">🧩</div>
+          <h3>Flexible floor deployment</h3>
+          <p>Use a dedicated Media PC to drive your display system and adapt layouts for different events, themes, and screen sizes.</p>
+        </div>
+        <div class="card">
+          <div class="icon">🛠️</div>
+          <h3>Operational control</h3>
+          <p>Make layout changes internally instead of depending on outside developers for every new jackpot theme or promotional update.</p>
         </div>
       </div>
-    </section>
-
-    <section class="trust-strip">
-      <div class="container trust-grid">
-        <div><strong>Keep your controller</strong><span>Upgrade the presentation, not the whole system</span></div>
-        <div><strong>Design it your way</strong><span>Create your own jackpot look with a visual editor</span></div>
-        <div><strong>Deploy on your Media PC</strong><span>Run the system on hardware you control</span></div>
+      <div class="band">
+        <strong>Upgrade your visuals — not your entire system.</strong>
       </div>
-    </section>
-
-    <section id="solution" class="section">
-      <div class="container two-col solution-grid">
-        <div class="reveal">
-          <span class="eyebrow">Why FrameLogic</span>
-          <h2>Built for casinos still using older Paltronics controllers</h2>
-          <p>
-            Many casinos still rely on older Paltronics hardware, but their jackpot graphics look outdated. FrameLogic Display Runtime gives operators a practical way to refresh the experience with modern visuals, custom themes, and stronger branding while keeping the Paltronics controller in place.
-          </p>
-          <div class="advantage-list">
-            <div>
-              <h3>Modernize without full replacement</h3>
-              <p>Keep your existing Paltronics environment and layer a new display experience on top of it.</p>
-            </div>
-            <div>
-              <h3>Create a unique visual identity</h3>
-              <p>Design jackpot themes that match your venue, event, promotion, or house style.</p>
-            </div>
-            <div>
-              <h3>Reduce dependency on outside design changes</h3>
-              <p>Update layouts, text, graphics, and backgrounds faster using the built-in Config Manager.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="value-box reveal delay-1">
-          <h3>Core positioning</h3>
-          <p class="quote">“FrameLogic helps casino owners build their own unique and modern jackpot theme while still using old Paltronics controllers.”</p>
-          <div class="value-pills">
-            <span>Legacy-friendly</span>
-            <span>Brand-focused</span>
-            <span>No coding needed</span>
-            <span>Custom layout control</span>
-            <span>Media-rich screens</span>
-            <span>Operationally practical</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="config-manager" class="section section-alt">
-      <div class="container">
-        <div class="section-heading reveal narrow-center">
-          <span class="eyebrow">Config Manager</span>
-          <h2>Design your own jackpot screens with full visual control</h2>
-          <p>
-            This is one of FrameLogic’s biggest selling points. The built-in <strong>Config Manager</strong> allows users to build their own jackpot layouts visually, without needing a developer to modify every screen.
-          </p>
-        </div>
-
-        <div class="showcase-card reveal">
-          <img src="config-manager.png" alt="FrameLogic Config Manager screenshot showing jackpot layout editor" class="showcase-image" />
-        </div>
-
-        <div class="card-grid three top-gap">
-          <article class="feature-card reveal">
-            <div class="icon">01</div>
-            <h3>Visual screen builder</h3>
-            <p>Add screens, place meters, drag images, add text, and control layout elements directly in the editor.</p>
-          </article>
-
-          <article class="feature-card reveal delay-1">
-            <div class="icon">02</div>
-            <h3>Idle and winning screen control</h3>
-            <p>Create separate screens for idle state and winning levels so your jackpot presentation feels more dynamic and polished.</p>
-          </article>
-
-          <article class="feature-card reveal delay-2">
-            <div class="icon">03</div>
-            <h3>Background and playback settings</h3>
-            <p>Use image or video backgrounds, set looping behavior, define duration, and fine-tune the look of each screen.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section id="features" class="section">
-      <div class="container">
-        <div class="section-heading reveal">
-          <span class="eyebrow">Key features</span>
-          <h2>Everything needed to sell the system clearly</h2>
-          <p>
-            FrameLogic Display Runtime is not just a runtime window. It is a full jackpot presentation solution for operators who want a cleaner, stronger, more modern display layer.
-          </p>
-        </div>
-
-        <div class="card-grid three">
-          <article class="feature-card reveal">
-            <div class="icon">04</div>
-            <h3>Works with Paltronics Rev4 &amp; Rev7</h3>
-            <p>Purpose-built for supported Paltronics controller environments so you can present compatibility clearly to buyers.</p>
-          </article>
-
-          <article class="feature-card reveal delay-1">
-            <div class="icon">05</div>
-            <h3>Custom media themes</h3>
-            <p>Run video and image-based jackpot themes for promotions, festive campaigns, premium rooms, and property branding.</p>
-          </article>
-
-          <article class="feature-card reveal delay-2">
-            <div class="icon">06</div>
-            <h3>Build your own Media PC</h3>
-            <p>Deploy FrameLogic on your own Media PC and connect it to Paltronics without locking yourself into expensive proprietary display hardware.</p>
-          </article>
-
-          <article class="feature-card reveal">
-            <div class="icon">07</div>
-            <h3>Unique jackpot identities</h3>
-            <p>Offer each venue a distinct jackpot theme that matches their floor style, promotions, and visual branding goals.</p>
-          </article>
-
-          <article class="feature-card reveal delay-1">
-            <div class="icon">08</div>
-            <h3>Operational flexibility</h3>
-            <p>Adapt screens for different venues, different promotions, and different jackpot levels without rebuilding from scratch.</p>
-          </article>
-
-          <article class="feature-card reveal delay-2">
-            <div class="icon">09</div>
-            <h3>Better player-facing presentation</h3>
-            <p>Make jackpots feel more premium and noticeable with stronger visuals, larger impact, and more professional themed screens.</p>
-          </article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section section-alt">
-      <div class="container two-col">
-        <div class="reveal">
-          <span class="eyebrow">Ideal buyers</span>
-          <h2>Who this product is for</h2>
-          <div class="advantage-list">
-            <div>
-              <h3>Casino owners with older Paltronics systems</h3>
-              <p>Perfect for venues that want better visuals without immediately replacing their jackpot controller setup.</p>
-            </div>
-            <div>
-              <h3>Technical teams who want control</h3>
-              <p>Useful for operators and in-house technical staff who want to manage jackpot themes directly.</p>
-            </div>
-            <div>
-              <h3>Properties running promotions and themed events</h3>
-              <p>Great for Chinese New Year themes, VIP campaigns, draw promotions, and other branded floor activations.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="value-box reveal delay-1">
-          <h3>Simple sales summary</h3>
-          <p class="quote">“Upgrade your visuals, not your entire system.”</p>
-          <p>
-            FrameLogic gives buyers a practical path to modern jackpot presentation: keep the Paltronics controller, build a Media PC, design custom themes, and deliver a stronger visual experience to players.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <section class="section cta-section">
-      <div class="container cta-box reveal">
-        <div>
-          <span class="eyebrow">Ready to sell it properly?</span>
-          <h2>Present FrameLogic as a modern upgrade path for legacy Paltronics jackpots.</h2>
-          <p>
-            Use this landing page to pitch the product, then add your demo video, pricing, screenshots, and support terms before publishing.
-          </p>
-        </div>
-        <a href="#contact" class="btn btn-primary">Contact Sales</a>
-      </div>
-    </section>
-
-    <section id="contact" class="section">
-      <div class="container two-col contact-grid">
-        <div class="reveal">
-          <span class="eyebrow">Contact</span>
-          <h2>Request a demo or pricing</h2>
-          <p>
-            Update the contact details below with your final sales channel, WhatsApp, Messenger, or business email before publishing live.
-          </p>
-          <div class="contact-card">
-            <p><strong>Product:</strong> FrameLogic Display Runtime</p>
-            <p><strong>Compatibility:</strong> Paltronics Rev4 &amp; Rev7</p>
-            <p><strong>Email:</strong> timothypaulevangelista@gmail.com</p>
-            <p><strong>Deployment:</strong> Buyer builds own Media PC and connects to Paltronics</p>
-          </div>
-        </div>
-
-        <form class="contact-form reveal delay-1" onsubmit="event.preventDefault(); alert('This is a demo landing page. Connect this form to your email service or backend before going live.');">
-          <label>
-            Name
-            <input type="text" placeholder="Your name" required>
-          </label>
-          <label>
-            Email
-            <input type="email" placeholder="Your email" required>
-          </label>
-          <label>
-            Casino / Company
-            <input type="text" placeholder="Property or business name">
-          </label>
-          <label>
-            Message
-            <textarea rows="5" placeholder="Tell us about your Paltronics setup or the theme you want to build"></textarea>
-          </label>
-          <button type="submit" class="btn btn-primary btn-full">Send Inquiry</button>
-        </form>
-      </div>
-    </section>
-  </main>
-
-  <footer class="site-footer">
-    <div class="container footer-wrap">
-      <div class="brand footer-brand">
-        <img src="logo.png" alt="FrameLogic logo" class="brand-logo" />
-        <div>
-          <strong>FrameLogic</strong>
-          <span>Display Runtime</span>
-        </div>
-      </div>
-      <p>Sales landing page updated with Config Manager showcase and Paltronics compatibility messaging.</p>
     </div>
-  </footer>
+  </section>
 
-  <script src="script.js"></script>
+  <section id="designer">
+    <div class="container showcase">
+      <div class="shot">
+        <img src="assets/config-manager.png" alt="FrameLogic Config Manager screenshot" />
+      </div>
+      <div>
+        <div class="section-head" style="text-align:left; margin-bottom:18px;">
+          <h2>Design your own jackpot displays</h2>
+          <p>FrameLogic includes a Config Manager that gives your team direct visual control over the jackpot presentation.</p>
+        </div>
+        <div class="list">
+          <div class="row"><div class="tick">✓</div><div><strong>No-code layout editing</strong><p>Add screens, place meters, insert graphics, and organize your display visually.</p></div></div>
+          <div class="row"><div class="tick">✓</div><div><strong>Video and image backgrounds</strong><p>Build event-based displays using modern themed artwork, promo screens, and animated backdrops.</p></div></div>
+          <div class="row"><div class="tick">✓</div><div><strong>Winning screen control</strong><p>Create separate idle and win screens per level, with timing, looping, and presentation settings.</p></div></div>
+          <div class="row"><div class="tick">✓</div><div><strong>Branding and placement freedom</strong><p>Position logos, text, jackpot values, and themed artwork exactly where you want them.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="multi">
+    <div class="container">
+      <div class="section-head">
+        <h2>Multi-controller support for bigger attraction screens</h2>
+        <p>If your casino floor has multiple supported Paltronics controllers and you want to showcase selected jackpots together on one large screen, FrameLogic is built for that workflow.</p>
+      </div>
+      <div class="grid-3">
+        <div class="card">
+          <div class="icon">🔗</div>
+          <h3>Connect multiple Paltronics units</h3>
+          <p>Bring jackpot data from more than one supported Paltronics controller into a single display concept.</p>
+        </div>
+        <div class="card">
+          <div class="icon">💰</div>
+          <h3>Highlight key levels together</h3>
+          <p>Display all Level 1 jackpots on one main attraction screen to increase visibility and player attention.</p>
+        </div>
+        <div class="card">
+          <div class="icon">🖥️</div>
+          <h3>Perfect for big-screen presentation</h3>
+          <p>Ideal for LED walls, feature monitors, or large-format attraction displays placed in high-traffic areas.</p>
+        </div>
+      </div>
+      <div class="band">
+        <strong>Turn multiple jackpot sources into one powerful visual attraction.</strong>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="section-head">
+        <h2>Simple deployment workflow</h2>
+        <p>FrameLogic is designed around a practical casino setup that keeps your existing supported controller environment while giving you a modern display layer.</p>
+      </div>
+      <div class="workflow">
+        <div class="card">
+          <div class="step-num">1</div>
+          <h3>Build your own Media PC</h3>
+          <p>Use a dedicated display computer sized for your venue, screen resolution, and playback requirements.</p>
+        </div>
+        <div class="card">
+          <div class="step-num">2</div>
+          <h3>Connect to supported Paltronics</h3>
+          <p>Integrate the Media PC with your Paltronics Rev4 or Rev7 environment for runtime display output.</p>
+        </div>
+        <div class="card">
+          <div class="step-num">3</div>
+          <h3>Run your custom jackpot theme</h3>
+          <p>Launch a modern visual experience built around your casino branding, promotions, and jackpot priorities.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="compatibility">
+    <div class="container compat">
+      <div class="card">
+        <div class="section-head" style="text-align:left; margin-bottom:12px;">
+          <h2>Built for Paltronics modernization</h2>
+          <p>FrameLogic is aimed at casino owners and operators who want their own unique and modern jackpot theme while still using supported older Paltronics controller hardware.</p>
+        </div>
+        <div class="badge-row">
+          <div class="badge">Supports Rev4</div>
+          <div class="badge">Supports Rev7</div>
+          <div class="badge">Custom Theme Workflow</div>
+          <div class="badge">Media PC Based</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="section-head" style="text-align:left; margin-bottom:12px;">
+          <h2>Best-fit use cases</h2>
+          <p>FrameLogic is especially useful for venues that want stronger attraction displays without a full system replacement project.</p>
+        </div>
+        <div class="list">
+          <div class="row"><div class="tick">✓</div><div><strong>Legacy jackpot refresh</strong><p>Modernize older jackpot visuals while continuing to use supported Paltronics infrastructure.</p></div></div>
+          <div class="row"><div class="tick">✓</div><div><strong>Seasonal or event-based themes</strong><p>Roll out themed presentations for holidays, promotions, VIP campaigns, or special floor events.</p></div></div>
+          <div class="row"><div class="tick">✓</div><div><strong>Large-floor attraction display</strong><p>Use centralized screens to highlight jackpot excitement across multiple controller sources.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="container">
+      <div class="contact">
+        <h2 style="margin-top:0">Contact FrameLogic</h2>
+        <p style="color:var(--muted); max-width:680px; margin:0 auto 14px;">For product inquiries, deployment discussions, and support, reach us directly through the email below.</p>
+        <div class="mail">support@framelogic.org</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">© 2026 FrameLogic Display Runtime. Modern jackpot presentation for supported Paltronics environments.</div>
+  </footer>
 </body>
 </html>
