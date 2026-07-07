@@ -45,8 +45,14 @@
     .brand{display:flex; align-items:center; gap:14px; font-weight:800; letter-spacing:.3px}
     .brand img{width:48px; height:48px; object-fit:contain; filter:drop-shadow(0 6px 16px rgba(0,0,0,.28))}
     .brand span{font-size:1.02rem}
-    .navlinks{display:flex; gap:20px; color:var(--muted); font-size:.95rem}
+    .navlinks{display:flex; gap:20px; color:var(--muted); font-size:.95rem; align-items:center}
     .navlinks a:hover{color:#fff}
+    .nav-demo{
+      padding:10px 16px;
+      border-radius:999px;
+      font-size:.9rem;
+      white-space:nowrap;
+    }
 
     .hero{position:relative; overflow:hidden}
     .hero::before{
@@ -170,6 +176,7 @@
       border:1px solid var(--line); box-shadow:var(--shadow);
     }
     .contact .mail{font-size:clamp(1.2rem, 2vw, 1.6rem); color:#ffe39c; font-weight:800}
+    .contact-actions{display:flex; justify-content:center; flex-wrap:wrap; gap:14px; margin-top:20px}
 
     footer{padding:26px 0 40px; color:#93a3be; text-align:center; font-size:.94rem}
 
@@ -182,6 +189,7 @@
     @media (max-width: 680px){
       .nav{gap:14px; flex-direction:column}
       .navlinks{flex-wrap:wrap; justify-content:center}
+      .nav-demo{width:100%; max-width:260px}
       .container{width:min(var(--max), calc(100% - 24px))}
       .hero-grid{padding:46px 0 32px}
       .grid-3,.grid-4,.workflow,.hero-points{grid-template-columns:1fr}
@@ -203,6 +211,7 @@
         <a href="#multi">Multi-Controller</a>
         <a href="#compatibility">Compatibility</a>
         <a href="#contact">Contact</a>
+        <a class="btn primary nav-demo" href="https://www.mediafire.com/file/toww4lt3icdxq80/FrameLogic.rar/file" target="_blank" rel="noopener">Request a DEMO Now</a>
       </div>
     </div>
   </div>
@@ -216,7 +225,8 @@
           FrameLogic Display Runtime helps casino operators transform older Paltronics-based jackpot setups into modern, high-impact display experiences with flexible design control, multi-controller support, and a clean Media PC workflow.
         </p>
         <div class="hero-cta">
-          <a class="btn primary" href="#contact">Contact FrameLogic</a>
+          <a class="btn primary" href="https://www.mediafire.com/file/toww4lt3icdxq80/FrameLogic.rar/file" target="_blank" rel="noopener">Request a DEMO Now</a>
+          <a class="btn secondary" href="#contact">Contact FrameLogic</a>
           <a class="btn secondary" href="#designer">Explore Config Manager</a>
         </div>
         <div class="hero-points">
@@ -377,6 +387,9 @@
         <h2 style="margin-top:0">Contact FrameLogic</h2>
         <p style="color:var(--muted); max-width:680px; margin:0 auto 14px;">For product inquiries, deployment discussions, and support, reach us directly through the email below.</p>
         <div class="mail">sales@framelogic.org</div>
+        <div class="contact-actions">
+          <a class="btn primary" href="https://www.mediafire.com/file/toww4lt3icdxq80/FrameLogic.rar/file" target="_blank" rel="noopener">Request a DEMO Now</a>
+        </div>
       </div>
     </div>
   </section>
